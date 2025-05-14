@@ -1,4 +1,4 @@
-from graphs_implementation import *
+from graph_simulate_statistics import *
 
 def test_calculate_min_deg():
     # Тест 1: Одна вершина без ребер
