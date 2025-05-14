@@ -112,13 +112,16 @@ def calculate_clique_number(G: Graph) -> int:
     return max([len(clique) for clique in max_cliques])
 
 def calculate_maxsize_independed_set(G: Graph) -> int:
-    """ Возвращает размер максимального независемого множества """
+    """ Возвращает размер максимального независимого множества """
     V_compl = G.V
     E_compl = set()
+    existing_edges = {tuple(edge) for edge in G.E}
+
     for i in range(len(G.V)):
         for j in range(i + 1, len(G.V)):
-            if [i, j] not in G.E:
+            if (i, j) not in existing_edges and (j, i) not in existing_edges:
                 E_compl.add((i, j))
+
     G_compl = Graph(V_compl, E_compl)
     return calculate_clique_number(G_compl)
 
@@ -131,8 +134,8 @@ human_readable_characts = {"calculate_min_deg": "Минимальная степ
                            "calculate_maxsize_independed_set": "Размер наибольшего независимого множества" }
 
 
-def evaluate(
-        num_samples: int = 420,                                 # количество реализация характеристики
+def simulate_graph_statistics(
+        sample_size: int = 420,                                 # количество реализация характеристики
         vector_size: int = 42,                                  # размерность случайного вектора
         gamma_k: float = GAMMA_K_0,                             # параметр k гамма-распределения
         gamma_lambda: float = GAMMA_LAMBDA_0,                   # параметр lambda гамма-распределения
@@ -142,7 +145,7 @@ def evaluate(
         knn_num_neighbours: int = 42,                           # количество соседей KNN графа
         T_dist_foo: Callable[[Graph], int] = calculate_max_deg, # функция вычисления характеристики для Distance графа
         dist_max_dist: int = 4.2,                               # макисмальная длина соединения Distance графа
-        draw_distributions: bool = False                        # рисовать ли гистограммы распределения
+        verbose: bool = False                        # рисовать ли гистограммы распределения
 ) -> dict[str: list]:
     """
     Несколько раз симмулирует реализацию случайного вектора с некоторыми параметрами.
@@ -153,7 +156,7 @@ def evaluate(
     T_knn_gamma_list, T_knn_weibull_list = [], []
     T_dist_gamma_list, T_dist_weibull_list = [], []
 
-    for i in range(num_samples):
+    for i in range(sample_size):
         gamma_sample = gen_gamma_points(vector_size, gamma_k, gamma_lambda)
         weibull_sample = gen_weibull_points(vector_size, weibull_k, weibull_lambda)
 
@@ -173,13 +176,14 @@ def evaluate(
         G_dist_weibull.build_dist_graph(max_dist = dist_max_dist)
         T_dist_weibull_list.append(T_dist_foo(G = G_dist_weibull))
 
-    if draw_distributions:
+    if verbose:
         plt.figure(figsize=(16, 3))
 
 
         plt.subplot(1, 2, 1)
-        plt.title(f"Распределение характеристики \'{human_readable_characts[T_knn_foo.__name__]}\' \nKNN граф.       " +
-                  f"K={knn_num_neighbours} \n\nWeibull( {weibull_k},  {weibull_lambda} ) \nГ( { gamma_k},  {gamma_lambda} )")
+        plt.title(f"Распределение характеристики \'{human_readable_characts[T_knn_foo.__name__]}\'\n"+
+                  f"KNN граф.       K={knn_num_neighbours}.       vector dimension={vector_size}\n\n" +
+                  f" Weibull( {weibull_k},  {weibull_lambda} ) \nГ( { gamma_k},  {gamma_lambda} )")
         bins = np.arange(min(T_knn_gamma_list + T_knn_weibull_list), max(T_knn_gamma_list + T_knn_weibull_list) + 1, 1)
         plt.hist(T_knn_gamma_list, bins=bins, align="mid", alpha = 0.5, label="Гамма распределение")
         plt.hist(T_knn_weibull_list, bins=bins, align="mid", alpha = 0.5, label="Распределение Вейбулла")
@@ -189,8 +193,9 @@ def evaluate(
         plt.legend()
 
         plt.subplot(1, 2, 2)
-        plt.title(f"Распределение характеристики \'{human_readable_characts[T_dist_foo.__name__]}\' \nDistance граф.       " +
-                  f"max_distance_connected={dist_max_dist} \n\nWeibull( {weibull_k},  {weibull_lambda} ) \nГ( { gamma_k},  {gamma_lambda} ) ")
+        plt.title(f"Распределение характеристики \'{human_readable_characts[T_dist_foo.__name__]}\'\n" +
+                  f"Distance граф.       max_distance_connected={dist_max_dist}.       vector dimension={vector_size}\n\n" +
+                  f"Weibull( {weibull_k},  {weibull_lambda} ) \nГ( { gamma_k},  {gamma_lambda} ) ")
         bins = np.arange(min(T_dist_gamma_list + T_dist_weibull_list), max(T_dist_gamma_list + T_dist_weibull_list) + 1, 1)
         plt.hist(T_dist_gamma_list, bins=bins, align="mid", alpha = 0.5, label="Гамма распределение")
         plt.hist(T_dist_weibull_list, bins=bins, align="mid", alpha = 0.5, label="Распределение Вейбулла")
@@ -206,3 +211,39 @@ def evaluate(
              "T_knn_weibull_lists": T_knn_weibull_list,
              "T_dist_gamma_lists": T_dist_gamma_list,
              "T_dist_weibull_lists": T_dist_weibull_list }
+
+
+def build_critical_region(num_samples: int = 1000, alpha: float = (0.05)**5) -> int:
+    """Построение критической области A_crit."""
+    A_values = []
+    for _ in range(num_samples):
+        knn_weibull = Graph(points = gen_weibull_points(40))
+        knn_weibull.build_dist_graph(max_dist = 2)
+        A = calculate_maxsize_independed_set(knn_weibull)
+        A_values.append(A)
+
+    A_crit = np.percentile(A_values, 100 * alpha)
+    return int(np.ceil(A_crit))
+
+def estimate_power(A_crit: int, num_samples: int = 1000) -> float:
+    """Оценка мощности критерия."""
+    rejections = 0
+    weibull = 0
+    for _ in range(num_samples):
+        dist_gamma = Graph(points = gen_gamma_points(40))
+        dist_gamma.build_dist_graph(max_dist = 1)
+        A = calculate_maxsize_independed_set(dist_gamma)
+        if A != A_crit and A != A_crit + 1:  # Отвергаем H_0
+            rejections += 1
+    power = rejections / num_samples
+
+    for _ in range(num_samples):
+        knn_weibull = Graph(points = gen_weibull_points(40))
+        knn_weibull.build_dist_graph(max_dist = 2)
+        A = calculate_maxsize_independed_set(knn_weibull)
+        if A == A_crit or  A == A_crit + 1:  # Принимаем H_0
+            weibull += 1
+    approved = weibull / num_samples
+
+
+    return power, approved
