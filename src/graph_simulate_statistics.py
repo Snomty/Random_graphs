@@ -98,37 +98,41 @@ def simulate_graph_statistics(
              "T_dist_weibull_lists": T_dist_weibull_list }
 
 
-def build_critical_region(num_samples: int = 1000, alpha: float = (0.05)**5) -> int:
+import numpy as np
+import networkx as nx
+from typing import List
+
+def build_critical_region(num_samples: int = 10**4, alpha: float = (0.05)**5) -> int:
     """Построение критической области A_crit."""
     A_values = []
     for _ in range(num_samples):
-        knn_weibull = Graph(points = gen_weibull_points(40))
-        knn_weibull.build_dist_graph(max_dist = 2)
-        A = calculate_maxsize_independed_set(knn_weibull)
+        dist_skew_normal = Graph(points = gen_skewnormal_points(20))
+        dist_skew_normal.build_dist_graph(max_dist = 1)
+        A = calculate_maxsize_independed_set(dist_skew_normal)
         A_values.append(A)
 
-    A_crit = np.percentile(A_values, 100 * alpha)
+    A_crit = np.percentile(A_values, 100 * (1 - alpha))
     return int(np.ceil(A_crit))
 
-def estimate_power(A_crit: int, num_samples: int = 1000) -> float:
+def estimate_power(A_crit: int, num_samples: int = 10**4) -> float:
     """Оценка мощности критерия."""
     rejections = 0
-    weibull = 0
+    skew = 0
     for _ in range(num_samples):
-        dist_gamma = Graph(points = gen_gamma_points(40))
-        dist_gamma.build_dist_graph(max_dist = 1)
-        A = calculate_maxsize_independed_set(dist_gamma)
-        if A != A_crit and A != A_crit + 1:  # Отвергаем H_0
+        dist_laplace = Graph(points = gen_laplace_points(20))
+        dist_laplace.build_dist_graph(max_dist = 1)
+        A = calculate_maxsize_independed_set(dist_laplace)
+        if A > A_crit:  # Отвергаем H_0
             rejections += 1
     power = rejections / num_samples
 
     for _ in range(num_samples):
-        knn_weibull = Graph(points = gen_weibull_points(40))
-        knn_weibull.build_dist_graph(max_dist = 2)
-        A = calculate_maxsize_independed_set(knn_weibull)
-        if A == A_crit or  A == A_crit + 1:  # Принимаем H_0
-            weibull += 1
-    approved = weibull / num_samples
+        dist_skew_normal = Graph(points = gen_skewnormal_points(20))
+        dist_skew_normal.build_dist_graph(max_dist = 1)
+        A = calculate_maxsize_independed_set(dist_skew_normal)
+        if A <= A_crit:  # Принимаем H_0
+            skew += 1
+    approved = skew / num_samples
 
 
     return power, approved
