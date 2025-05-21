@@ -72,7 +72,7 @@ def simulate_graph_statistics(
         bins = np.arange(min(T_knn_gamma_list + T_knn_weibull_list), max(T_knn_gamma_list + T_knn_weibull_list) + 1, 1)
         plt.hist(T_knn_gamma_list, bins=bins, align="mid", alpha = 0.5, label="Гамма распределение")
         plt.hist(T_knn_weibull_list, bins=bins, align="mid", alpha = 0.5, label="Распределение Вейбулла")
-        plt.xticks(bins)
+        plt.xticks([ ((5 - k) * min(bins) + k * max(bins)) // 5 for k in range(6) ])
         plt.xlabel("Значение характеристики")
         plt.ylabel("Количество графов")
         plt.legend()
@@ -84,7 +84,7 @@ def simulate_graph_statistics(
         bins = np.arange(min(T_dist_gamma_list + T_dist_weibull_list), max(T_dist_gamma_list + T_dist_weibull_list) + 1, 1)
         plt.hist(T_dist_gamma_list, bins=bins, align="mid", alpha = 0.5, label="Гамма распределение")
         plt.hist(T_dist_weibull_list, bins=bins, align="mid", alpha = 0.5, label="Распределение Вейбулла")
-        plt.xticks(bins)
+        plt.xticks([ ((5 - k) * min(bins) + k * max(bins)) // 5 for k in range(6) ])
         plt.xlabel("Значение характеристики")
         plt.ylabel("Количество графов")
         plt.legend()
@@ -98,37 +98,47 @@ def simulate_graph_statistics(
              "T_dist_weibull_lists": T_dist_weibull_list }
 
 
-def build_critical_region(num_samples: int = 10**4, alpha: float = (0.05)**5) -> int:
+def build_critical_region(
+        points_generator: Callable[[int], int],
+        T_foo: Callable[[Graph], int] ,
+        num_samples: int = 10**3, 
+        alpha: float = 0.05) -> int:
     """Построение критической области A_crit."""
     A_values = []
     for _ in range(num_samples):
-        dist_weibull_normal = Graph(points = gen_weibull_points(20))
-        dist_weibull_normal.build_dist_graph(max_dist = 1)
-        A = calculate_clique_number(dist_weibull_normal)
+        G_dist = Graph(points = points_generator(50))
+        G_dist.build_dist_graph(max_dist = 1)
+        A = T_foo(G_dist)
         A_values.append(A)
 
     A_crit = np.percentile(A_values, 100 * (1 - alpha))
     return int(np.ceil(A_crit))
 
-def estimate_power(A_crit: int, num_samples: int = 10**4) -> float:
+
+def estimate_power(
+        points_generator_1: Callable[[int], int],
+        points_generator_2: Callable[[int], int],
+        T_foo: Callable[[Graph], int] ,
+        A_crit: int, 
+        num_samples: int = 10**4
+    ) -> float:
     """Оценка мощности критерия."""
-    rejections = 0
-    weibull = 0
+    H1_counter = 0
+    H0_counter = 0
     for _ in range(num_samples):
-        dist_gamma = Graph(points = gen_gamma_points(20))
-        dist_gamma.build_dist_graph(max_dist = 1)
-        A = calculate_clique_number(dist_gamma)
+        G_dist = Graph(points = points_generator_2(50))
+        G_dist.build_dist_graph(max_dist = 1)
+        A = T_foo(G_dist)
         if A > A_crit:  # Отвергаем H_0
-            rejections += 1
-    power = rejections / num_samples
+            H1_counter += 1
+    power = H1_counter / num_samples
 
     for _ in range(num_samples):
-        dist_weibull_normal = Graph(points = gen_weibull_points(20))
-        dist_weibull_normal.build_dist_graph(max_dist = 1)
-        A = calculate_clique_number(dist_weibull_normal)
+        G_dist = Graph(points = points_generator_1(50))
+        G_dist.build_dist_graph(max_dist = 1)
+        A = T_foo(G_dist)
         if A <= A_crit:  # Принимаем H_0
-            weibull += 1
-    approved = weibull / num_samples
-
+            H0_counter += 1
+    approved = H0_counter / num_samples
 
     return power, approved
