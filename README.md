@@ -9,5 +9,5 @@
   /graph.py                         # Основной класс графа
   /graph_characteristic.py          # Вычисление характеристик
   /graph_simulate_statistics.py     # Вспомогательные функции
-  /graph_implementation.ipynb       # Весь код в красивом Jupiter ноутбуке с комментариями
+  /Graph_Research_Student2.ipynb    # Весь код в красивом Jupiter ноутбуке с комментариями
 ```
