@@ -1,13 +1,28 @@
 from graph import *
 from graph_characteristic import *
 from typing import Callable
+from scipy.stats import skewnorm
+import pandas as pd
+from tqdm import tqdm
 
+
+skew_alpha = 1
+laplace_alpha = 0
+laplace_beta = 1 / np.sqrt(2)
 
 WEIBULL_K_0 = 0.5
 WEIBULL_LAMBDA_0 = 1 / np.sqrt(10)
 
 GAMMA_K_0 = 0.5
 GAMMA_LAMBDA_0 = 1 / np.sqrt(2)
+
+def gen_skewnormal_points(num_points: int, alpha: float = skew_alpha) -> np.ndarray[np.float64]:
+    """ Возвращает num_points точек сгенерированных по косому нормальному распределению S(alpha) """
+    return skewnorm.rvs(alpha, size=num_points)
+
+def gen_laplace_points(num_points: int, alpha: float = laplace_alpha, beta : float = laplace_beta) -> np.ndarray[np.float64]:
+    """ Возвращает num_points точек сгенерированных по распределению Лапласа L(alpha, beta) """
+    return np.random.laplace(loc=alpha, scale=beta, size=num_points)
 
 def gen_weibull_points(num_points: int, k: float = WEIBULL_K_0, lambd: float = WEIBULL_LAMBDA_0) -> np.ndarray[np.float64]:
     """ Возвращает num_points точек сгенерированных по распределению Вейбулла W(k, lambd) """
@@ -143,3 +158,53 @@ def estimate_power(
     approved = H0_counter / num_samples
 
     return power, approved
+
+
+def generate_dataset(
+    points_generator_1: Callable[[int], int],
+    points_generator_2: Callable[[int], int], 
+    num_vertex : int = 25, 
+    dataset_size : int = 10000,
+    max_dist : int = 1
+) -> pd.DataFrame:
+
+    distribution_1_characteristics = []
+    distribution_2_characteristics = []
+
+    characteristics_functions = [
+        calculate_min_deg, calculate_max_deg, calculate_number_component, calculate_number_articul,
+        calculate_number_triangle, calculate_clique_number, calculate_maxsize_independed_set
+    ]
+    
+    characteristics_names = [
+       'min_deg', 'max_deg', 'number_component', 'number_articul', 
+       'numbertriangle', 'clique_number', 'max_independent_set'
+    ]
+    
+    dataset_size = dataset_size // 2
+    for _ in tqdm(range(dataset_size)):
+        first_distribution = Graph(points = points_generator_1(num_vertex))
+        first_distribution.build_dist_graph(max_dist = max_dist)
+
+        second_distribution = Graph(points = points_generator_2(num_vertex))
+        second_distribution.build_dist_graph(max_dist = max_dist)
+
+        first = []
+        second = []
+        for func in characteristics_functions:
+          first.append(func(first_distribution))
+          second.append(func(second_distribution))
+
+        distribution_1_characteristics.append(first)
+        distribution_2_characteristics.append(second)
+
+    distribution_1_characteristics = pd.DataFrame(distribution_1_characteristics, columns=characteristics_names)
+    distribution_2_characteristics = pd.DataFrame(distribution_2_characteristics, columns=characteristics_names)
+
+    distribution_1_characteristics['distribution'] = 0
+    distribution_2_characteristics['distribution'] = 1
+
+    df = pd.concat([distribution_1_characteristics, distribution_2_characteristics], ignore_index=True)
+    df = df.sample(frac=1).reset_index(drop=True)
+
+    return df
