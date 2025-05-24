@@ -23,10 +23,21 @@ def calculate_number_triangle(G: Graph) -> int:
     triangles_dict =  nx.triangles(G.nx_obj)
     return sum(triangles_dict.values()) // 3
 
-def calculate_clique_number(G: Graph) -> int:
+def calculate_clique_number(G: Graph, trials = 1) -> int:
     """ Возвращает кликовое число графа """
-    max_cliques = list(nx.find_cliques(G.nx_obj))
-    return max([len(clique) for clique in max_cliques])
+    G = G.nx_obj
+    max_size = 0
+    
+    start_node = next(iter(G.nodes))
+    current_clique = {start_node}
+    candidates = set(G.neighbors(start_node))
+    
+    while candidates:
+        node = max(candidates, key=lambda x: len(set(G.neighbors(x)) & candidates))
+        current_clique.add(node)
+        candidates &= set(G.neighbors(node))
+    
+    return max_size
 
 def calculate_maxsize_independed_set(G: Graph) -> int:
     """ Возвращает размер максимального независимого множества """
