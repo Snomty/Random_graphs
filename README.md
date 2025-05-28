@@ -1,4 +1,4 @@
-# Random_graphs# Ветка `Ivanova/graph-implementation`
+Ветка `Ivanova/graph-implementation`
 
 **Описание**: Классификация распределений на основе характеристик случайных графов и создание классификатора распределения.
 
