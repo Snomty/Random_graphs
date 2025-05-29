@@ -1,0 +1,20 @@
+
+Поскольку удобнее было в обоих случаях гипотезу $H_0$ обозначить в датасете, как класс 1, то ошибка первого рода считается как $1 - recall$, а мощность критерия как $\frac{TN}{TN + FP}$
+\\
+\\
+\noindent \textbf{Итоги Минакова Д. Д}
+
+\begin{table}[h]
+    \centering
+    \begin{tabular}{lcc}
+    \toprule
+    \textbf{Размер выборки} & \textbf{Ошибка I рода ($\alpha$)} & \textbf{Мощность критерия} \\
+    \midrule
+    N = 25   & 0.20 & 0.80 \\
+    N = 100  & 0.03 & 0.97 \\
+    N = 500  & 0.01 & 1.00 \\
+    \bottomrule
+    \end{tabular}
+    \label{tab:power_analysis}
+\end{table}
+
