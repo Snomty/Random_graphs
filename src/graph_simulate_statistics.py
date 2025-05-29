@@ -251,3 +251,103 @@ def generate_dataset(
     df = df.sample(frac=1).reset_index(drop=True)
 
     return df
+
+
+    # перебор параметров распределений и вывод соответствующих графиков
+
+def plot_distribution_parameter_combinations(laplace_alphas, laplace_betas, skew_norm_alphas,
+                               num_samples=200, vector_size=40,
+                               knn_num_neighbours=3, dist_max_dist=1, graph_type : str = "knn"):
+    # laplace_alphas - значение первого параметра распределения лапласа
+    # laplace_betas - значения второго параметра распределения лапласа
+    # skew_norm_alphas - значения параметра косого распределения
+    plot_counter = 0
+    plt.figure(figsize=(24, 6))
+
+    for alpha in laplace_alphas:
+        for beta in laplace_betas:
+            for alpha_skew in skew_norm_alphas:
+                if plot_counter % 4 == 0 and plot_counter != 0:
+                    plt.tight_layout()
+                    plt.show()
+                    plt.figure(figsize=(24, 6))
+
+                result = simulate_graph_statistics(
+                    num_samples=num_samples,
+                    vector_size=vector_size,
+                    verbose=False,
+                    knn_num_neighbours=knn_num_neighbours,
+                    dist_max_dist=dist_max_dist,
+                    laplace_alpha=alpha,
+                    laplace_beta=beta,
+                    skew_alpha=alpha_skew,
+                    distribution_type="laplace_skew"
+                )
+
+                plt.subplot(2, 8, 2*(plot_counter % 4) + 1)
+                bins = np.arange(min(result["T_knn_skew_normal_list"] + result["T_knn_laplace_list"]),
+                                max(result["T_knn_skew_normal_list"] + result["T_knn_laplace_list"]) + 1, 1)
+                plt.hist(result["T_knn_skew_normal_list"], bins=bins, align="mid", alpha=0.5, label="Косое нормальное")
+                plt.hist(result["T_knn_laplace_list"], bins=bins, align="mid", alpha=0.5, label="Лаплас")
+                plt.title(f"KNN\nα={alpha}, β={beta}\nskew={alpha_skew}", fontsize=10)
+                plt.legend(fontsize=8)
+
+                plt.subplot(2, 8, 2*(plot_counter % 4) + 2)
+                bins = np.arange(min(result["T_dist_skew_normal_list"] + result["T_dist_laplace_list"]),
+                                max(result["T_dist_skew_normal_list"] + result["T_dist_laplace_list"]) + 1, 1)
+                plt.hist(result["T_dist_skew_normal_list"], bins=bins, align="mid", alpha=0.5, label="Косое нормальное")
+                plt.hist(result["T_dist_laplace_list"], bins=bins, align="mid", alpha=0.5, label="Лаплас")
+                plt.title(f"Distance\nα={alpha}, β={beta}\nskew={alpha_skew}", fontsize=10)
+                plt.legend(fontsize=8)
+
+                plot_counter += 1
+
+
+    if plot_counter % 4 != 0 or plot_counter == 0:
+        plt.tight_layout()
+        plt.show()
+
+#  перебор параметров для построения графа и вывод соответствующих графиков
+
+def plot_graphs_parameter_combinations(sizes : np.ndarray[float] = [40], neighbours : np.ndarray[float] = [3], dists :  np.ndarray[float] = [1],  graph_type : str = "knn"):
+  # sizes - размер графа
+  # neighbours - кол-во соседей в knn
+  # dists - расстояние для дист.графа
+  # graph_type - какой график отрисовывать knn или dist
+  plot_counter = 0
+  plt.figure(figsize=(24, 4))
+  for n in sizes:
+      for neigh in neighbours:
+          for dist in dists:
+            result = simulate_graph_statistics(
+                num_samples=200,
+                vector_size=n,
+                verbose=False,
+                knn_num_neighbours=neigh,
+                dist_max_dist=dist,
+                distribution_type="laplace_skew"
+            )
+
+            if plot_counter % 8 == 0 and plot_counter != 0:
+                plt.tight_layout()
+                plt.show()
+                plt.figure(figsize=(24, 4))
+
+            plt.subplot(1, 8, (plot_counter % 8) + 1)
+            bins = np.arange(min(result[f"T_{graph_type}_skew_normal_list"] + result[f"T_{graph_type}_laplace_list"]),
+                          max(result[f"T_{graph_type}_skew_normal_list"] + result[f"T_{graph_type}_laplace_list"]) + 1, 1)
+            plt.hist(result[f"T_{graph_type}_skew_normal_list"], bins=bins, align="mid", alpha=0.5, label="Skew normal")
+            plt.hist(result[f"T_{graph_type}_laplace_list"], bins=bins, align="mid", alpha=0.5, label="Laplace")
+
+            # Упрощенный заголовок
+            plt.title(f"Size={n}\nparameter={neigh}\n{graph_type}\ndisatnce = {dist}", fontsize=9)
+            plt.xlabel("Value", fontsize=8)
+            plt.ylabel("Count", fontsize=8)
+
+            plot_counter += 1
+
+  # Отображаем последние графики, если они есть
+  if plot_counter % 8 != 0:
+      plt.tight_layout()
+      plt.show()
+
