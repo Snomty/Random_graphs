@@ -350,8 +350,3 @@ def plot_graphs_parameter_combinations(sizes : np.ndarray[float] = [40], neighbo
   if plot_counter % 8 != 0:
       plt.tight_layout()
       plt.show()
-
-<<<<<<< HEAD
-
-=======
->>>>>>> Minacov/Part-II

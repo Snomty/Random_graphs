@@ -22,28 +22,11 @@ def calculate_number_triangle(G: Graph) -> int:
     triangles_dict = nx.triangles(G.nx_obj)
     return sum(triangles_dict.values()) // 3
 
-<<<<<<< HEAD
 def calculate_clique_number(G: Graph) -> int:
     """ Возвращает оценку кликового числа через жадную раскраску """
     chromatic_number_approx = nx.coloring.greedy_color(G.nx_obj, strategy="largest_first")
     return max(chromatic_number_approx.values()) + 1
-=======
-def calculate_clique_number(G: Graph, trials = 1) -> int:
-    """ Возвращает кликовое число графа """
-    G = G.nx_obj
-    max_size = 0
-    
-    start_node = next(iter(G.nodes))
-    current_clique = {start_node}
-    candidates = set(G.neighbors(start_node))
-    
-    while candidates:
-        node = max(candidates, key=lambda x: len(set(G.neighbors(x)) & candidates))
-        current_clique.add(node)
-        candidates &= set(G.neighbors(node))
-    
-    return max_size
->>>>>>> Minacov/Part-II
+
 
 def calculate_maxsize_independed_set(G: Graph) -> int:
     """ Возвращает размер наибольшего независимого множества """
