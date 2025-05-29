@@ -1,0 +1,96 @@
+\documentclass[12pt]{article}
+
+\usepackage[T2A]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[russian]{babel}
+\usepackage{amsthm, amsmath, amssymb,amsfonts}
+\usepackage{hologo}
+\usepackage{graphicx}
+\usepackage{lipsum}
+
+% Настройка полей документа
+\usepackage[top=2cm, bottom=2cm, left=2cm, right=2cm]{geometry}
+
+\usepackage{booktabs}
+\usepackage{multirow}
+\usepackage[table]{xcolor}
+\usepackage{array}
+\usepackage{colortbl}
+
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{amsfonts}
+
+\newcounter{mysectioncounter}
+\newcommand{\mysection}[1]{
+  \vspace{0.5em}
+  \refstepcounter{mysectioncounter}
+  {\large\bf \arabic{mysectioncounter}. #1} 
+  \vspace{0.5em}
+}
+
+\newcommand{\RomanNumeralCaps}[1]{\MakeUppercase{\romannumeral #1}}
+
+\begin{document}
+
+\section{Описание кода}
+
+\subsection{Договор про хранение графов}
+\input{graphs_implementation/graph_class}
+    
+\subsection{Функции подсчета характеристик графа}
+\input{graphs_implementation/calculate_characteristics}
+\newpage
+\section*{2. Part-I}
+
+\subsection*{2.1 Поведение характеристики в зависимости от параметров распределений (Минаков Д.Д)}
+\input{Part-I_student-2/point 1}
+\newpage
+
+\subsection*{2.1 Поведение характеристики в зависимости от параметров распределений (Иванова А.А)}
+\input{Part-I-Ivanova/point_1}
+\newpage
+
+\subsection*{2.2 Поведение характеристики в зависимости от построения\\ (Минаков Д.Д.)}
+\input{Part-I_student-2/point 2}
+\newpage
+
+\subsection*{2.2 Поведение характеристики в зависимости от построения \\(Иванова А.А.)}
+\input{Part-I-Ivanova/point_2}
+\newpage
+
+\subsection*{2.3 Построение критического множества и оценка мощности критерия}
+
+\noindent Построение критического множества $\mathcal{A}$ происходит следующим образом:\\
+1. Генерируем большое количество графов, с фиксированными параметрами и считаем для каждого из них характеристику.\\
+2. Считаем $95\%$ перцентиль = $A_{crit}$ - это будет крайнее значение множества $\mathcal{A}$ \\
+3. Теперь, если значение характеристики графа $\leq A_{crit}$, то принимаем гипотезу $H_0$, иначе отвергаем\\
+
+\vspace{5pt}
+\noindent \textbf{Минаков Д.Д.}\\\\
+\input{Part-I_student-2/point 3}
+    
+\vspace{10pt}
+\noindent \textbf{Иванова А.А.}\\\\
+\input{Part-I-Ivanova/point_3}
+\newpage
+
+\section*{3. Part-II}
+\subsection*{3.1 Применяем классификационные алгоритмы (Минаков Д.Д.)}
+\input{Part-II_student-2/point 1}
+
+\subsection*{3.1 Применяем классификационные алгоритмы (Иванова А.А.)}
+\input{Part-II-Ivanova/point_1}
+
+\subsection*{3.2 Важность характеристик, как признаков классификации (Минаков Д.Д.)}
+\input{Part-II_student-2/point 2}
+\newpage
+\subsection*{3.2 Важность характеристик, как признаков классификации (Иванова А.А.)}
+\input{Part-II-Ivanova/point_2}
+\newpage
+
+\subsection*{3.3 Выводы о вероятности ошибки первого рода и мощности модели как критерия}
+\input{Part-II_student-2/point 3}
+\input{Part-II-Ivanova/point_3}
+        
+\end{document}

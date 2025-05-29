@@ -1,0 +1,37 @@
+\input code-format.tex
+
+В данном разделе представлены ключевые функции для анализа свойств графов. Все функции принимают на вход объект класса \texttt{Graph} и возвращают числовые характеристики.
+
+\begin{lstlisting}
+def calculate_min_deg(G: Graph) -> int:
+    """ Returns the minimum degree of a graph vertex """
+
+def calculate_max_deg(G: Graph) -> int:
+    """ Returns the maximum degree of a graph vertex """
+
+def calculate_number_component(G: Graph) -> int:
+    """ Returns the number of connected components of a graph """
+
+def calculate_number_articul(G: Graph) -> int:
+    """ Returns the number of articulation points of a graph """
+
+def calculate_number_triangle(G: Graph) -> int:
+    """ Returns the number of triangles in a graph """
+
+def calculate_clique_number(G: Graph) -> int:
+    """ Returns the click count of a graph """
+
+def calculate_maxsize_independed_set(G: Graph) -> int:
+    """ Returns the size of the maximum independent set """
+\end{lstlisting}
+
+\noindent Все функции реализованы с помощью библиотеки \textbf{NetworkX}. Почти все функции честным перебором дают точные значения характеристик.\\
+Исключениями являются:
+
+\begin{itemize}
+    \item Функция подсчета кликового числа. Реализована через жадный поиск хроматического числа графа, основано на том, что для дистанционного графа они совпадают почти наверное.
+
+    \item Функция подсчета числа независимости графа. Реализована через подсчет кликового числа для дополнения.
+\end{itemize}
+
+\noindentКаждая функция покрыта тестами.
