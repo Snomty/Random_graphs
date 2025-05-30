@@ -7,7 +7,6 @@ import numpy as np
 
 
 
-
 from graph_characteristic import (
     calculate_min_deg,
     calculate_max_deg,
