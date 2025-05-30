@@ -17,10 +17,6 @@ from graph_characteristic import (
 )
 
 
-
-
-
-
 SKEW_ALPHA_0 = 1
 LAPLACE_ALPHA_0 = 0
 LAPLACE_BETA_0 = 1 / np.sqrt(2)
