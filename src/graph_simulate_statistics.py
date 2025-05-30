@@ -28,11 +28,9 @@ def gen_weibull_points(num_points: int, k: float = WEIBULL_K_0, lambd: float = W
     """ Возвращает num_points точек сгенерированных по распределению Вейбулла W(k, lambd) """
     return lambd * np.random.weibull(k, num_points)
 
-
 def gen_gamma_points(num_points: int, k: float = GAMMA_K_0, lambd: float = GAMMA_LAMBDA_0) -> np.ndarray[np.float64]:
     """ Возвращает num_points точек сгенерированных по гамма-распределению Gamm(k, lambd)"""
     return np.random.gamma(k, lambd, num_points)
-
 
 
 def simulate_graph_statistics(
@@ -108,7 +106,7 @@ def simulate_graph_statistics(
 
         # KNN график
         plt.subplot(1, 2, 1)
-        bins = np.arange(min(T_knn_dist1_list + T_knn_dist2_list), 
+        bins = np.arange(min(T_knn_dist1_list + T_knn_dist2_list),
                          max(T_knn_dist1_list + T_knn_dist2_list) + 1, 1)
         plt.hist(T_knn_dist1_list, bins=bins, align="mid", alpha=0.5, label=dist1_name)
         plt.hist(T_knn_dist2_list, bins=bins, align="mid", alpha=0.5, label=dist2_name)
@@ -124,7 +122,7 @@ def simulate_graph_statistics(
 
         # Distance график
         plt.subplot(1, 2, 2)
-        bins = np.arange(min(T_dist_dist1_list + T_dist_dist2_list), 
+        bins = np.arange(min(T_dist_dist1_list + T_dist_dist2_list),
                          max(T_dist_dist1_list + T_dist_dist2_list) + 1, 1)
         plt.hist(T_dist_dist1_list, bins=bins, align="mid", alpha=0.5, label=dist1_name)
         plt.hist(T_dist_dist2_list, bins=bins, align="mid", alpha=0.5, label=dist2_name)
@@ -156,10 +154,11 @@ def simulate_graph_statistics(
             "T_dist_laplace_list": T_dist_dist2_list
         }
 
+
 def build_critical_region(
         points_generator: Callable[[int], int],
         T_foo: Callable[[Graph], int] ,
-        num_samples: int = 10**3, 
+        num_samples: int = 10**3,
         alpha: float = 0.05) -> int:
     """Построение критической области A_crit."""
     A_values = []
@@ -176,8 +175,8 @@ def build_critical_region(
 def estimate_power(
         points_generator_1: Callable[[int], int],
         points_generator_2: Callable[[int], int],
-        T_foo: Callable[[Graph], int] ,
-        A_crit: int, 
+        T_foo: Callable[[Graph], int],
+        A_crit: int,
         num_samples: int = 10**4
     ) -> float:
     """Оценка мощности критерия."""
@@ -253,8 +252,7 @@ def generate_dataset(
     return df
 
 
-    # перебор параметров распределений и вывод соответствующих графиков
-
+# перебор параметров распределений и вывод соответствующих графиков
 def plot_distribution_parameter_combinations(laplace_alphas, laplace_betas, skew_norm_alphas,
                                num_samples=200, vector_size=40,
                                knn_num_neighbours=3, dist_max_dist=1, graph_type : str = "knn"):
@@ -307,8 +305,8 @@ def plot_distribution_parameter_combinations(laplace_alphas, laplace_betas, skew
         plt.tight_layout()
         plt.show()
 
-#  перебор параметров для построения графа и вывод соответствующих графиков
 
+#  перебор параметров для построения графа и вывод соответствующих графиков
 def plot_graphs_parameter_combinations(sizes : np.ndarray[float] = [40], neighbours : np.ndarray[float] = [3], dists :  np.ndarray[float] = [1],  graph_type : str = "knn"):
   # sizes - размер графа
   # neighbours - кол-во соседей в knn

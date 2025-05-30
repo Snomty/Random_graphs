@@ -1,7 +1,7 @@
+from typing import Set, Tuple
 import numpy as np
 import matplotlib.pyplot as plt
 import networkx as nx
-from typing import Set, Tuple, List
 
 class Graph:
     def __init__(self, points: np.ndarray, edges: Set[Tuple[int, int]] = None) -> None:
@@ -9,7 +9,7 @@ class Graph:
         self.E = set([tuple(sorted(edge)) for edge in edges]) if edges else set()
         self.nx_obj = nx.Graph()
         self.nx_obj.add_nodes_from(range(len(points)))
-        if edges:
+        if edges is not None:
             self.nx_obj.add_edges_from(edges)
 
     def build_KNN_graph(self, K: int) -> None:
