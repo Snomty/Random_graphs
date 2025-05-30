@@ -1,8 +1,16 @@
 import sys
 import os
-
+import numpy as np
+from graph_characteristic import (
+    calculate_min_deg,
+    calculate_max_deg,
+    calculate_number_component,
+    calculate_number_articul,
+    calculate_number_triangle,
+    Graph
+)
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", "src"))
-from graph_characteristic import *
+
 
 def test_calculate_min_deg():
     # Тест 1: Одна вершина без ребер
@@ -327,6 +335,7 @@ def test_calculate_number_triangle():
     assert calculate_number_triangle(G8) == 3, "Тест 8 (3 треугольника) не пройден"
 
     print("Все 8 тестов для calculate_number_triangle прошли успешно!")
+
 
 if __name__ == "__main__":
     test_calculate_min_deg()

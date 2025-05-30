@@ -1,0 +1,17 @@
+repos:
+  - repo: local
+    hooks:
+      - id: autopep8
+        name: autopep8 (autoformat)
+        entry: autopep8 --in-place --aggressive --recursive src/ tests/
+        language: system
+        types: [python]
+        stages: [commit]
+
+      - id: pylint
+        name: pylint (linting)
+        entry: bash -c "git diff --name-only --cached --diff-filter=d | grep -E '\.py$' | xargs pylint"
+        language: system
+        types: [python]
+        stages: [commit]
+        pass_filenames: false  # Pylint работает с папками, а не файлами

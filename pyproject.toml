@@ -1,0 +1,25 @@
+[tool.autopep8]
+max-line-length = 120
+
+[tool.pylint.MASTER]
+ignore = ["venv", ".git"]  # Игнорируемые папки
+
+[tool.pylint.MESSAGES_CONTROL]
+disable = [
+    "C0103",  # Conform to snake_case style
+    "C0114",  # Missing module docstring
+    "C0115",  # Missing class docstring
+    "C0116",  # Missing function or method docstring
+    "C3001",  # Lambda expression assigned to a variable
+    "R0913",  # Too many arguments
+    "W0102",  # Dangerous default value
+    "W0401",  # Wildcard import
+]
+
+[tool.pylint.FORMAT]
+max-line-length = 120
+
+[tool.pylint.DESIGN]
+max-positional-arguments=20     # вместо стандартных 5 (R0914)
+max-locals = 40                 # вместо стандартных 15 (R0914)
+max-statements = 100            # вместо 50 (R0915)

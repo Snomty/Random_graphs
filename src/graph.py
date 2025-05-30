@@ -3,14 +3,17 @@ import numpy as np
 import matplotlib.pyplot as plt
 import networkx as nx
 
+
 class Graph:
     def __init__(self, points: np.ndarray, edges: Set[Tuple[int, int]] = None) -> None:
         self.V = points
-        self.E = set([tuple(sorted(edge)) for edge in edges]) if edges else set()
         self.nx_obj = nx.Graph()
         self.nx_obj.add_nodes_from(range(len(points)))
         if edges is not None:
+            self.E = {tuple(sorted(edge)) for edge in edges}
             self.nx_obj.add_edges_from(edges)
+        else:
+            self.E = set()
 
     def build_KNN_graph(self, K: int) -> None:
         """ Строит ребра KNN графа """
@@ -20,7 +23,7 @@ class Graph:
             dist = []
             for idx_2, x_2 in enumerate(self.V):
                 dist.append((np.linalg.norm(x_1 - x_2), idx_2))
-            for nearest in sorted(dist)[1:K+1]:
+            for nearest in sorted(dist)[1:K + 1]:
                 self.E.add(tuple(sorted((idx_1, nearest[1]))))
 
         self.nx_obj.clear_edges()
