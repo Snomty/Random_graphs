@@ -1,4 +1,5 @@
-name: CI
+name: CI Checks
+
 on: [push, pull_request]
 
 jobs:
@@ -6,9 +7,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-      
-      - name: Run pre-commit
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
         run: |
-          pip install pre-commit
-          pre-commit run --all-files  # Проверяет ВСЕ файлы
+          python -m pip install --upgrade pip
+          pip install autopep8 pylint pytest pre-commit
+          pre-commit install
+
+      - name: Run pre-commit checks
+        run: pre-commit run --all-files
