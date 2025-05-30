@@ -9,6 +9,12 @@ from graph_characteristic import (
     calculate_number_triangle,
     Graph
 )
+
+
+
+
+
+
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", "src"))
 
 
