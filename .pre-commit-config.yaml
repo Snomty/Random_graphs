@@ -6,12 +6,20 @@ repos:
         entry: bash -c "autopep8 --in-place --aggressive --recursive src/ tests/ && git add -u"
         language: system
         types: [python]
-        stages: [commit]
+        stages: [pre-commit]
 
       - id: pylint
-        name: pylint (linting)
-        entry: bash -c "git diff --name-only --cached --diff-filter=d | grep -E '\.py$' | xargs pylint"
+        name: pylint (changed files)
+        entry: bash -c 'export PYTHONPATH=${PYTHONPATH}:./src; files=$(git diff --name-only --cached --diff-filter=ACMR | grep "^src/.*\.py$"); [ -n "$files" ] && echo "$files" | xargs pylint || echo "No Python files to lint in src/"'
         language: system
         types: [python]
-        stages: [commit]
-        pass_filenames: false  # Pylint работает с папками, а не файлами
+        stages: [pre-commit]
+        pass_filenames: false
+      
+      - id: pytest
+        name: Run tests
+        entry: bash -c "pytest --cov=src && rm -f .coverage"
+        language: system
+        types: [python]
+        pass_filenames: false
+        

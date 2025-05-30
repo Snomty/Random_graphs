@@ -1,12 +1,4 @@
-import sys
-import os
 import numpy as np
-
-
-
-
-
-
 from graph_characteristic import (
     calculate_min_deg,
     calculate_max_deg,
@@ -15,7 +7,6 @@ from graph_characteristic import (
     calculate_number_triangle,
     Graph
 )
-sys.path.append(os.path.join(os.path.dirname(__file__), "..", "src"))
 
 
 def test_calculate_min_deg():

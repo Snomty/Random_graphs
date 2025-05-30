@@ -23,3 +23,8 @@ max-line-length = 120
 max-positional-arguments=20     # вместо стандартных 5 (R0914)
 max-locals = 40                 # вместо стандартных 15 (R0914)
 max-statements = 100            # вместо 50 (R0915)
+
+[tool.pytest.ini_options]
+pythonpath = "src"
+testpaths = "tests"
+addopts = "-v --cov=src --cov-report=term-missing"

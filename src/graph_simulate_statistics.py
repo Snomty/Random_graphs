@@ -16,6 +16,7 @@ from graph_characteristic import (
     human_readable_characts
 )
 
+
 SKEW_ALPHA_0 = 1
 LAPLACE_ALPHA_0 = 0
 LAPLACE_BETA_0 = 1 / np.sqrt(2)
