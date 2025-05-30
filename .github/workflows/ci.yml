@@ -3,14 +3,13 @@ name: CI Checks
 on: [push, pull_request]
 
 jobs:
-  autopep8:
-    name: "autopep8 (autoformat)"
+  formatting:
+    name: "🛠️ Code Formatting"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
@@ -20,42 +19,42 @@ jobs:
       - name: Run autopep8
         run: autopep8 --in-place --recursive src/ tests/
 
-  pylint:
-    name: "pylint (linting)"
-    needs: autopep8
+  linting:
+    name: "🔍 Linting (pylint)"
+    needs: formatting
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.11"
-
-      - name: Install pylint
-        run: pip install pylint
-
-      - name: Run pylint
-        run: pylint src/
-        env:
-          PYTHONPATH: ${{ github.workspace }}/src
-
-  pytest:
-    name: "Run tests"
-    needs: pylint
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
       - name: Install dependencies
         run: |
+          pip install pylint numpy pandas scipy matplotlib networkx tqdm
+          pip install -e .
+
+      - name: Run pylint
+        run: pylint src/
+        env:
+          PYTHONPATH: ${{ github.workspace }}
+
+  testing:
+    name: "🧪 Unit Tests"
+    needs: linting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install test dependencies
+        run: |
+          pip install numpy pandas scipy matplotlib networkx tqdm pytest pytest-cov
           pip install -e .[test]
-          pip install pytest-cov
 
       - name: Run tests
-        run: pytest --cov=src --cov-report=term-missing
+        run: pytest --cov=src --cov-report=term-missing tests/
