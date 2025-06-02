@@ -1,3 +1,6 @@
+[![CI](https://github.com/Snomty/Random_graphs/actions/workflows/ci.yml/badge.svg)](https://github.com/Snomty/Random_graphs/actions/workflows/ci.yml)
+[![Python Version](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/)
+
 # Исследование зависимостей характеристик графа от распределений и создание классификатора
 
 Проект посвящен анализу влияния различных распределений на характеристики графов и разработке классификатора, определяющего тип распределения по свойствам графа.
@@ -15,9 +18,6 @@
 - **`Minacov/Part-I`** - Исследования по первой части
 - **`Minacov/Part-II`** - Исследования по второй части (классификация)
 
-
-[![CI](https://github.com/Snomty/Random_graphs/actions/workflows/ci.yml/badge.svg)](https://github.com/Snomty/Random_graphs/actions/workflows/ci.yml)
-[![Python Version](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/)
 
 ## Техническая документация
 
