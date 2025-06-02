@@ -12,7 +12,7 @@
 - склонируйте репозиторий и перейдите в него 
   - git clone https://github.com/Snomty/Random_graphs.git 
   - cd Random_graphs
-в командной строке пропишите pip3 install -e .
+- в командной строке пропишите pip3 install -e .
 ---
 
 ## Для работы требуется:
