@@ -15,13 +15,15 @@
 - **`Minacov/Part-I`** - Исследования по первой части
 - **`Minacov/Part-II`** - Исследования по второй части (классификация)
 
-## Плашки CI и анализаторов
 
-[![CI](https://github.com/Snomty/Random_graphs/blob/main/repository/.github/workflows/ci.yml)]
+[![CI](https://github.com/Snomty/Random_graphs/actions/workflows/ci.yml/badge.svg)](https://github.com/Snomty/Random_graphs/actions/workflows/ci.yml)
+[![Python Version](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/)
 
 ## Техническая документация
 
-Файл [report/documentation.md]()
+Файл [report/documentation.md](https://github.com/Snomty/Random_graphs/blob/cleanup/repository/report/documentation.md)
+
+В ней так же указан пример использования
 
 ## Общая структура репозитория
 
@@ -34,6 +36,8 @@
   -`report.pdf` — финальный отчет по проекту (анализ, графики, выводы).
 
   -`report/` — исходные файлы отчета в LaTeX (.tex).
+
+  -`documentation.md` - документация к проекту
 
 - `src/` — исходный код:
 
