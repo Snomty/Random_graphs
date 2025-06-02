@@ -17,8 +17,11 @@
 
 ## Плашки CI и анализаторов
 
-[![CI](https://github.com/ваш-username/ваш-репозиторий/actions/workflows/ci.yml)]
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![CI](https://github.com/Snomty/Random_graphs/blob/main/repository/.github/workflows/ci.yml)]
+
+## Техническая документация
+
+Файл [report/documentation.md]()
 
 ## Общая структура репозитория
 
@@ -28,15 +31,15 @@
 
 - `report/`
 
---`report.pdf` — финальный отчет по проекту (анализ, графики, выводы).
+  -`report.pdf` — финальный отчет по проекту (анализ, графики, выводы).
 
---`report/` — исходные файлы отчета в LaTeX (.tex).
+  -`report/` — исходные файлы отчета в LaTeX (.tex).
 
 - `src/` — исходный код:
 
--- `Jupyter Notebook` (.ipynb) с исследованием и визуализацией.
+  - `Jupyter Notebook` (.ipynb) с исследованием и визуализацией.
 
--- Модули (.py) с функциями, которые используются в ноутбуках.
+  - Модули (.py) с функциями, которые используются в ноутбуках.
 
 - `tests/` — юнит-тесты для проверки кода (написаны с помощью pytest).
 
