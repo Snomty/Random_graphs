@@ -21,7 +21,7 @@
 
 ## Техническая документация
 
-Файл [report/documentation.md](https://github.com/Snomty/Random_graphs/blob/cleanup/repository/report/documentation.md)
+Файл [report/documentation.md](https://github.com/Snomty/Random_graphs/blob/main/report/documentation.md)
 
 В ней так же указан пример использования
 
